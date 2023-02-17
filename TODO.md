@@ -13,3 +13,5 @@
  - [ ] minimap scroll bar?
  - [ ] verbosity flag
  - [ ] replace all icons with custom
+ - [ ] smash the whole thing through a formatter
+ - [ ] do smart things like use clippy & CI or something
