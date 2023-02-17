@@ -1,0 +1,15 @@
+ - [ ] refresh the display on file write (change)
+ - [ ] include multiple themes
+   - [ ] find or create a theme similarish to github/gitlab/gitea/etc
+   - [ ] allow user-defined themes
+   - [ ] add CLI theme selection
+   - [ ] add runtime theme selection (in-window)
+ - [ ] add runtime settings in-window (some might be handled by theme?)
+   - [ ] font size
+   - [ ] margins
+ - [ ] properly lock down Tauri permissions (disable clicking links...)
+ - [ ] set the title to include the opened file
+ - [ ] add a simple file browser if one is not supplied on the CLI?
+ - [ ] minimap scroll bar?
+ - [ ] verbosity flag
+ - [ ] replace all icons with custom
