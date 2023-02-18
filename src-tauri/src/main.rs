@@ -13,10 +13,12 @@ use log::*;
 struct TargetFile(Option<String>);
 
 #[tauri::command]
-fn gethtml(file: tauri::State<TargetFile>) -> String {
+fn gethtml(file: tauri::State<TargetFile>, window: tauri::Window) -> String {
     debug!("updating?");
 
     let markdown = if let Some(file) = &file.0 {
+        let filename = std::path::Path::new(file).file_name().expect("Path is not to a file").to_str().expect("Not valid unicode");
+        window.set_title(&format!("Anakata - {}", filename)).expect("Failed to set title?");
         fs::read_to_string(file).unwrap_or_else(|_| format!(" # File '{}' not found!", file))
     } else {
         "# File not found!".to_string()

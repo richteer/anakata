@@ -9,7 +9,7 @@
    - [ ] margins
  - [ ] add config file
  - [ ] properly lock down Tauri permissions (disable clicking links...)
- - [ ] set the title to include the opened file
+ - [x] set the title to include the opened file
  - [ ] add a simple file browser if one is not supplied on the CLI?
  - [ ] minimap scroll bar?
  - [ ] verbosity flag
