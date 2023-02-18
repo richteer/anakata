@@ -4,38 +4,19 @@
 )]
 
 use std::fs;
-use std::sync::Mutex;
 use clap::{
     arg,
     command,
 };
-use lazy_static::lazy_static;
 use log::*;
 
-struct AnakataState {
-    file: Option<String>,
-}
-
-impl Default for AnakataState {
-    fn default() -> Self {
-        Self {
-            file: None
-        }
-    }
-}
-
-// TODO: figure out if there is a better way to store this information "globally"
-// TODO: use inotify or something instead so it refreshes when it needs to
-lazy_static! {
-    static ref STATE: Mutex<AnakataState> = Mutex::new(AnakataState::default());
-}
+struct TargetFile(Option<String>);
 
 #[tauri::command]
-fn gethtml() -> String {
+fn gethtml(file: tauri::State<TargetFile>) -> String {
     debug!("updating?");
 
-    let state = STATE.lock().unwrap();
-    let markdown = if let Some(file) = &state.file {
+    let markdown = if let Some(file) = &file.0 {
         fs::read_to_string(file).unwrap_or_else(|_| format!(" # File '{}' not found!", file))
     } else {
         "# File not found!".to_string()
@@ -54,22 +35,22 @@ fn main() {
         .arg(arg!(<FILE>).required(false))
         .get_matches()
     ;
-
-    #[cfg(debug_assertions)]
-    {
-        let mut state = STATE.lock().unwrap();
-        state.file = Some("../README.md".to_string());
-    }
     
-    if let Some(file) = matches.get_one::<String>("FILE") {
-        let mut state = STATE.lock().unwrap();
-        state.file = Some(file.to_string())
+    let file = if let Some(filename) = matches.get_one::<String>("FILE") {
+        Some(filename.into())
     } else {
-        info!("TODO: actually support launching without a file")
-    }
+        info!("TODO: actually support launching without a file");
+
+        #[cfg(not(debug_assertions))]
+        { None }
+
+        #[cfg(debug_assertions)]
+        Some("../TEST.md".into())
+    };
     
     
     tauri::Builder::default()
+        .manage(TargetFile(file))
         .invoke_handler(tauri::generate_handler![gethtml])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
